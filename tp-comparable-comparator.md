@@ -41,7 +41,7 @@ La solución está en dos interfaces del corazón de Java que modelan la compara
 
 |  | `Comparable<T>` | `Comparator<T>` |
 |---|---|---|
-| **Dónde vive la lógica** | Dentro de la clase de dominio | En una clase externa (o lambda) |
+| **Dónde vive la lógica** | Dentro de la clase de dominio | En una lambda, method reference o clase externa |
 | **Método clave** | `int compareTo(T o)` | `int compare(T o1, T o2)` |
 | **Cantidad de criterios posibles** | **Uno solo** (el orden natural) | **Infinitos** (uno por cada comparator) |
 | **Acoplamiento con el dominio** | Alto: modificás la clase | Bajo: la clase no se entera |
@@ -177,29 +177,25 @@ Sin escribir código, respondé en `RESPUESTAS.md`:
 
 ---
 
-#### Ejercicio 4: Comparators clásicos (estilo pre-Java 8)
+#### Ejercicio 4: Comparators con lambdas y method references
 
-Creá **dos clases** separadas que implementen `Comparator<Estudiante>`:
+Creá comparators para al menos **tres atributos distintos** usando las herramientas de Java 8+:
 
-1. `EstudiantePorMateriasAprobadasComparator`: ordena por `cantidadMateriasAprobadas` ascendente (menor a mayor).
-2. `EstudiantePorNombreComparator`: ordena alfabéticamente por `nombre` (usá `String.compareTo()`, que ya existe y maneja correctamente los strings).
+1. **Con lambda explícita:** definí un `Comparator<Estudiante>` mediante una expresión lambda `(e1, e2) -> ...` que ordene por `cantidadMateriasAprobadas` ascendente. Usá `Integer.compare()` (no resta).
+2. **Con `Comparator.comparing()` + method reference:** definí comparators para `nombre` (alfabético) y `edad` (ascendente) usando `Comparator.comparing(Estudiante::getNombre)` y `Comparator.comparing(Estudiante::getEdad)`.
+3. Verificá los tres en un `main` con `list.sort(comparator)`.
 
-Verificá ambas en un `main`, pasando el comparator correspondiente como segundo argumento de `Collections.sort(lista, comparator)`.
-
-**Criterio de aceptación:** Mostrar la lista ordenada con cada criterio y los resultados deben ser verificables visualmente.
+**Criterio de aceptación:** Mostrar la lista ordenada con cada uno de los tres criterios. Los resultados deben ser verificables visualmente.
 
 ---
 
-#### Ejercicio 5: Comparators modernos (Java 8+)
+#### Ejercicio 5: Criterios compuestos y orden inverso
 
-Reescribí los comparators del ejercicio anterior usando las herramientas que Java incorporó desde la versión 8:
+1. **Desempate con `thenComparing()`:** creá un comparator que ordene **primero por promedio descendente y, en caso de empate, por nombre alfabéticamente ascendente**. Usá tus datos de prueba con empates intencionales para comprobar que el desempate funciona.
+2. **Orden inverso con `reversed()`:** a partir del comparator de promedio descendente, generá uno que ordene por promedio **ascendente** sin reescribir la lógica (simplemente encadenando `.reversed()`).
+3. **Combiná todo:** definí un comparator que ordene por `cantidadMateriasAprobadas` descendente y, a igual cantidad, por `nombre` ascendente.
 
-1. **Versión con lambda explícita:** creá un `Comparator<Estudiante>` usando una expresión lambda `(e1, e2) -> ...`.
-2. **Versión con `Comparator.comparing()` + method reference:** usá `Comparator.comparing(Estudiante::getCantidadMateriasAprobadas)`.
-3. **Criterio compuesto con `thenComparing()`:** creá un comparator que ordene **primero por promedio descendente y, en caso de empate, por nombre alfabéticamente ascendente**. Acá es donde los empates intencionales de tus datos de prueba se hacen visibles.
-4. **Orden inverso con `reversed()`:** a partir del comparator de promedio descendente, generá uno que ordene por promedio **ascendente** sin reescribir la lógica.
-
-**Criterio de aceptación:** Los 4 comparators deben funcionar con `list.sort(comparator)`. Los empates en promedio deben resolverse por nombre.
+**Criterio de aceptación:** Los tres comparators deben funcionar con `list.sort(comparator)`. Los empates en el primer criterio deben resolverse por el segundo.
 
 ---
 

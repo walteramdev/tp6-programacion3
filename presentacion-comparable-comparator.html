@@ -314,75 +314,32 @@ lista.add(<span class="syn-kw">new</span> <span class="syn-type">Estudiante</spa
     <div class="big-text">Un solo criterio no alcanza</div>
   </div>
 
-  <!-- SLIDE 6: Comparator — la clase -->
+  <!-- SLIDE 6: Comparator con lambdas y comparing() -->
   <div class="slide">
     <h1><code>Comparator&lt;T&gt;</code></h1>
-    <p>Estrategia <strong>externa</strong> a la clase de dominio.<br>La clase <code>Estudiante</code> no se modifica.</p>
-
-    <h3>Comparator cl&aacute;sico (pre-Java 8)</h3>
-    <div class="code-file">PorMateriasComparator.java</div>
-    <pre><span class="syn-kw">public class</span> <span class="syn-type">PorMateriasComparator</span>
-        <span class="syn-kw">implements</span> <span class="syn-type">Comparator</span>&lt;<span class="syn-type">Estudiante</span>&gt; {
-
-    <span class="syn-ann">@Override</span>
-    <span class="syn-kw">public int</span> <span class="syn-method">compare</span>(<span class="syn-type">Estudiante</span> a, <span class="syn-type">Estudiante</span> b) {
-        <span class="syn-kw">return</span> <span class="syn-type">Integer</span>
-            .compare(a.materiasAprobadas,
-                     b.materiasAprobadas);
-    }
-}</pre>
-
-    <div class="note">
-      M&eacute;todo <code>compare(a, b)</code>: mismo contrato que <code>compareTo</code>.<br>
-      Pod&eacute;s crear <strong>infinitos</strong> comparators sin tocar el dominio.
-    </div>
-  </div>
-
-  <!-- SLIDE 7: Comparator — cómo se usa -->
-  <div class="slide">
-    <h1>C&oacute;mo se usa un Comparator</h1>
-
-    <pre><span class="syn-cmt">// Pasando el comparator como 2° argumento</span>
-<span class="syn-type">Collections</span>.sort(
-    lista,
-    <span class="syn-kw">new</span> <span class="syn-type">PorMateriasComparator</span>()
-);</pre>
-
-    <h3 style="margin-top:2vh;">O desde Java 8</h3>
-    <pre>lista.sort(<span class="syn-kw">new</span> <span class="syn-type">PorMateriasComparator</span>());</pre>
-
-    <h3 style="margin-top:2vh;">&iquest;Y si quiero ordenar por edad?</h3>
-    <pre><span class="syn-cmt">// Creo otra clase, sin tocar Estudiante</span>
-lista.sort(<span class="syn-kw">new</span> <span class="syn-type">PorEdadComparator</span>());</pre>
-
-    <div class="note">
-      <strong>Ventaja clave:</strong> desacoplamos el criterio de orden<br>
-      de la clase de dominio. Cada comparator es una estrategia.
-    </div>
-  </div>
-
-  <!-- SLIDE 8: Java 8+ — lambdas -->
-  <div class="slide">
-    <h1>Comparators en Java 8+</h1>
+    <p>Estrategia <strong>externa</strong> a la clase de dominio.<br>
+    <code>Estudiante</code> no se modifica. Se define con una lambda o un method reference.</p>
 
     <h3>Con lambda expl&iacute;cita</h3>
     <pre>(a, b) -> <span class="syn-type">Integer</span>.compare(a.getEdad(), b.getEdad())</pre>
 
     <h3 style="margin-top:2vh;">Con <code>Comparator.comparing()</code></h3>
-    <pre><span class="syn-type">Comparator</span>&lt;<span class="syn-type">Estudiante</span>&gt; porEdad =
-    <span class="syn-type">Comparator</span>.comparing(<span class="syn-type">Estudiante</span>::getEdad);</pre>
-
-    <h3 style="margin-top:2vh;">Con method reference</h3>
-    <pre><span class="syn-type">Comparator</span>.comparing(<span class="syn-type">Estudiante</span>::getNombre)
+    <pre><span class="syn-type">Comparator</span>.comparing(<span class="syn-type">Estudiante</span>::getEdad)
+<span class="syn-type">Comparator</span>.comparing(<span class="syn-type">Estudiante</span>::getNombre)
 <span class="syn-type">Comparator</span>.comparing(<span class="syn-type">Estudiante</span>::getPromedio)</pre>
+
+    <h3 style="margin-top:2vh;">As&iacute; se usa</h3>
+    <pre>lista.sort(<span class="syn-type">Comparator</span>.comparing(<span class="syn-type">Estudiante</span>::getEdad));
+lista.sort((a, b) -> <span class="syn-type">Integer</span>.compare(a.materiasAprobadas, b.materiasAprobadas));</pre>
 
     <div class="note">
       <code>Comparator.comparing()</code> recibe una <strong>funci&oacute;n extractora</strong><br>
-      (qu&eacute; atributo usar para comparar) y devuelve el comparator.
+      (qu&eacute; atributo comparar) y devuelve el comparator listo para usar.<br>
+      Pod&eacute;s crear <strong>infinitos</strong> criterios sin tocar el dominio.
     </div>
   </div>
 
-  <!-- SLIDE 9: Java 8+ — thenComparing y reversed -->
+  <!-- SLIDE 7: thenComparing y reversed -->
   <div class="slide">
     <h1>Encadenamiento y orden inverso</h1>
 
@@ -408,7 +365,7 @@ lista.sort(<span class="syn-kw">new</span> <span class="syn-type">PorEdadCompara
     </div>
   </div>
 
-  <!-- SLIDE 10: Comparable vs Comparator -->
+  <!-- SLIDE 8: Comparable vs Comparator -->
   <div class="slide">
     <h1>Comparable vs Comparator</h1>
 
@@ -456,7 +413,7 @@ lista.sort(<span class="syn-kw">new</span> <span class="syn-type">PorEdadCompara
     </div>
   </div>
 
-  <!-- SLIDE 11: Anti-patrón de la resta -->
+  <!-- SLIDE 9: Anti-patrón de la resta -->
   <div class="slide">
     <h1>&#9888;&#65039; El anti-patr&oacute;n de la resta</h1>
 
@@ -479,7 +436,7 @@ lista.sort(<span class="syn-kw">new</span> <span class="syn-type">PorEdadCompara
     transitividad, simetr&iacute;a y consistencia.</p>
   </div>
 
-  <!-- SLIDE 12: Anti-patrón — solución -->
+  <!-- SLIDE 10: Anti-patrón — solución -->
   <div class="slide">
     <h1>La soluci&oacute;n correcta</h1>
 
@@ -502,7 +459,7 @@ lista.sort(<span class="syn-kw">new</span> <span class="syn-type">PorEdadCompara
     </div>
   </div>
 
-  <!-- SLIDE 13: Hacia Spring Boot -->
+  <!-- SLIDE 11: Hacia Spring Boot -->
   <div class="slide">
     <h1>Hacia Spring Boot</h1>
 
@@ -535,7 +492,7 @@ lista.sort(<span class="syn-kw">new</span> <span class="syn-type">PorEdadCompara
     </p>
   </div>
 
-  <!-- SLIDE 14: Spring Boot — request/response -->
+  <!-- SLIDE 12: Spring Boot — request/response -->
   <div class="slide">
     <h1>Request y respuesta</h1>
 
@@ -560,7 +517,7 @@ lista.sort(<span class="syn-kw">new</span> <span class="syn-type">PorEdadCompara
     </div>
   </div>
 
-  <!-- SLIDE 15: Spring Boot — manejo de errores -->
+  <!-- SLIDE 13: Spring Boot — manejo de errores -->
   <div class="slide">
     <h1>Manejo de errores</h1>
 
@@ -589,7 +546,7 @@ lista.sort(<span class="syn-kw">new</span> <span class="syn-type">PorEdadCompara
     </div>
   </div>
 
-  <!-- SLIDE 16: El TP -->
+  <!-- SLIDE 14: El TP -->
   <div class="slide" style="justify-content:flex-start;padding-top:4vh;">
     <h1>El Trabajo Pr&aacute;ctico</h1>
 
@@ -645,7 +602,7 @@ lista.sort(<span class="syn-kw">new</span> <span class="syn-type">PorEdadCompara
 
 </div>
 
-<div id="slide-indicator">slide 1 / 16</div>
+<div id="slide-indicator">slide 1 / 14</div>
 <div id="controls">
   <button id="prev" title="Anterior (←)">← Anterior</button>
   <button id="next" title="Siguiente (→)">Siguiente →</button>
